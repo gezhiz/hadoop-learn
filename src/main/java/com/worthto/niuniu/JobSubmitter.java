@@ -6,15 +6,12 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.StringTokenizer;
 
 /**
  * 用于提交map reduce 任务的客户端程序
@@ -23,6 +20,16 @@ import java.util.StringTokenizer;
  * @author gezz
  * @description todo
  * @date 2019/9/25.
+ *
+ *
+ *
+ * 在集群上运行MapReduce 的方法：
+ * 1、在编译器打包
+ * Build----Build Artifacts----
+ * 2、上传到服务器
+ * scp /Users/gezz/IdeaProjects/hadoop-learn/out/artifacts/wordCount/wordCount.jar root@master:/jar
+ * 3、在服务器上运行
+ *  hadoop jar wordCount.jar com.worthto.niuniu.JobSubmitter
  */
 public class JobSubmitter {
 
@@ -34,10 +41,11 @@ public class JobSubmitter {
 
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", "hdfs://master:9000/");
+        //在本地跑不能有mapreduce.framework.name参数的配置，否则跑不起来
         conf.set("mapreduce.framework.name", "yarn");
         conf.set("yarn.resourcemanager.hostname", "master");
         //设置jar工作目录
-        conf.set("mapreduce.job.jar", "/Users/gezz/IdeaProjects/hadoop-learn/out/artifacts/hadoop_learn_jar/hadoop-learn.jar");
+//        conf.set("mapreduce.job.jar", "/Users/gezz/IdeaProjects/hadoop-learn/out/artifacts/wordCount/wordCount.jar");
         //配置跨平台运行
         conf.set("mapreduce.app-submission.cross-platform", "true");
         Job job = null;
@@ -97,6 +105,8 @@ public class JobSubmitter {
                 System.out.println("成功运行任务");
             }
             System.out.println("结束运行");
+            //0就是true
+            System.exit(result ? 0 : 1);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -107,41 +117,4 @@ public class JobSubmitter {
 
     }
 
-    public static class WordCountMap extends Mapper<LongWritable, Text, Text, LongWritable> {
-        private final static LongWritable ONE = new LongWritable(1);
-        private Text word = new Text();
-
-        /**
-         *
-         * @param key 每个数据的记录在数据分片中的字节偏移量，数据类型是LongWritable
-         * @param value 每行的内容
-         * @throws IOException
-         */
-        @Override
-        public void map(LongWritable key, Text value, Context context) throws IOException {
-            String line = value.toString();
-            StringTokenizer tokenizer = new StringTokenizer(line);
-            while (tokenizer.hasMoreTokens()) {
-                word.set(tokenizer.nextToken());
-                try {
-                    context.write(word, ONE);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
-
-    public static class WordCountReduce extends Reducer<Text,LongWritable,Text,LongWritable> {
-
-        @Override
-        protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
-            Long sum = 0L;
-            for(LongWritable value: values) {
-                sum += value.get();
-            }
-            context.write(key, new LongWritable(sum));
-        }
-    }
 }
