@@ -1,4 +1,4 @@
-package com.worthto.niuniu;
+package com.worthto.niuniu.wordcount;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

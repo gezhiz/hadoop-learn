@@ -1,5 +1,8 @@
-package com.worthto.niuniu;
+package com.worthto.niuniu.common;
 
+import com.worthto.niuniu.wordcount.WordCountSubmitter;
+import com.worthto.niuniu.wordcount.WordCountMap;
+import com.worthto.niuniu.wordcount.WordCountReduce;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -14,35 +17,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * 用于提交map reduce 任务的客户端程序
- * 1.封装job运行时必要的参数
- * 2、与服务端交互，提交任务
  * @author gezz
  * @description todo
- * @date 2019/9/25.
- *
- *
- *
- * 在集群上运行MapReduce 的方法：
- * 1、在编译器打包
- * Build----Build Artifacts----
- * 2、上传到服务器
- * scp /Users/gezz/IdeaProjects/hadoop-learn/out/artifacts/wordCount/wordCount.jar root@master:/jar
- * 3、在服务器上运行
- *  hadoop jar wordCount.jar com.worthto.niuniu.JobSubmitter
+ * @date 2019/9/27.
  */
-public class JobSubmitter {
+public abstract class JobProviderTemplate implements JobProvider {
+    private FileSystem fileSystem = null;
 
-    private static FileSystem fileSystem = null;
-
-    public static void main(String[] args) {
+    @Override
+    public Job getJob() {
         //设置hadoop用户名
         System.setProperty("HADOOP_USER_NAME","root");
 
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", "hdfs://master:9000/");
         //在本地跑不能有mapreduce.framework.name参数的配置，否则跑不起来
-        conf.set("mapreduce.framework.name", "yarn");
+//        conf.set("mapreduce.framework.name", "yarn");
         conf.set("yarn.resourcemanager.hostname", "master");
         //设置jar工作目录
 //        conf.set("mapreduce.job.jar", "/Users/gezz/IdeaProjects/hadoop-learn/out/artifacts/wordCount/wordCount.jar");
@@ -71,9 +61,9 @@ public class JobSubmitter {
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
 
-        job.setJarByClass(JobSubmitter.class);
+        job.setJarByClass(WordCountSubmitter.class);
         job.setNumReduceTasks(1);
-        Path outputPath = new Path("hdfs://master:9000/hdfs-file/wordcount/output/");
+        Path outputPath = getOutputPath();
         try {
             if (fileSystem.exists(outputPath)) {
                 fileSystem.delete(outputPath,true);
@@ -83,38 +73,29 @@ public class JobSubmitter {
         }
         try {
             //注意：下面两个路径是hdfs的路径
-            FileInputFormat.setInputPaths(job, new Path("hdfs://master:9000/hdfs-file/wordcount/input"));
+            FileInputFormat.setInputPaths(job, getInputPaths());
             FileOutputFormat.setOutputPath(job, outputPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            job.submit();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        //是否打印日志
-        boolean verbose = true;
-        try {
-            boolean result = job.waitForCompletion(verbose);
-            if (result) {
-                System.out.println("成功运行任务");
-            }
-            System.out.println("结束运行");
-            //0就是true
-            System.exit(result ? 0 : 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        return job;
     }
 
+    public FileSystem getFileSystem() {
+        return fileSystem;
+    }
+
+
+    /**
+     * 配置文件输入
+     * @return
+     */
+    public abstract Path[] getInputPaths();
+
+
+    /**
+     * 配置结果文件输出位置
+     * @return
+     */
+    public abstract Path getOutputPath();
 }
