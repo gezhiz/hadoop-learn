@@ -35,7 +35,6 @@ public class FlowCountMapper extends Mapper<LongWritable,Text,Text,FlowBeanWrita
 //        String site = items[1];
         Long upFlow = Long.parseLong(items[2]);
         Long dFlow = Long.parseLong(items[3]);
-        FlowBeanWritable flowBeanWritable = new FlowBeanWritable(upFlow, dFlow, upFlow + dFlow, phone);
-        context.write(new Text(phone), flowBeanWritable);
+        context.write(new Text(phone), new FlowBeanWritable(upFlow, dFlow, upFlow + dFlow, phone));
     }
 }

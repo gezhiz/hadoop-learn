@@ -1,8 +1,5 @@
 package com.worthto.niuniu.common;
 
-import com.worthto.niuniu.wordcount.WordCountSubmitter;
-import com.worthto.niuniu.wordcount.WordCountMap;
-import com.worthto.niuniu.wordcount.WordCountReduce;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -53,15 +50,7 @@ public abstract class JobProviderTemplate implements JobProvider {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        job.setReducerClass(WordCountReduce.class);
-        job.setMapperClass(WordCountMap.class);
-
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(LongWritable.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(LongWritable.class);
-
-        job.setJarByClass(WordCountSubmitter.class);
+        job.setJarByClass(JobProviderTemplate.class);
         job.setNumReduceTasks(1);
         Path outputPath = getOutputPath();
         try {

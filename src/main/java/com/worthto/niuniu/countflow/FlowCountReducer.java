@@ -14,13 +14,13 @@ import java.util.Iterator;
 public class FlowCountReducer extends Reducer<Text,FlowBeanWritable,Text,FlowBeanWritable> {
 
     @Override
-    protected void reduce(Text key, Iterable<FlowBeanWritable> values, Context context) throws IOException, InterruptedException {
+    protected void reduce(Text key, Iterable<FlowBeanWritable> values, Reducer<Text,FlowBeanWritable,Text,FlowBeanWritable>.Context context) throws IOException, InterruptedException {
         Iterator<FlowBeanWritable> iterator = values.iterator();
         String phone = key.toString();
         Long upCount = 0L;
         Long dCount = 0L;
         Long amount = 0L;
-        if (iterator.hasNext()) {
+        while (iterator.hasNext()) {
             FlowBeanWritable flowBeanWritable = iterator.next();
             upCount += flowBeanWritable.getUpFlow();
             dCount += flowBeanWritable.getdFlow();

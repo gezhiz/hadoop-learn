@@ -1,4 +1,4 @@
-package com.worthto.niuniu.wordcount;
+package com.worthto.niuniu.countflow;
 
 import com.worthto.niuniu.common.JobProvider;
 import com.worthto.niuniu.common.JobProviderTemplate;
@@ -10,34 +10,22 @@ import org.apache.hadoop.mapreduce.Job;
 import java.io.IOException;
 
 /**
- * 用于提交map reduce 任务的客户端程序
- * 1.封装job运行时必要的参数
- * 2、与服务端交互，提交任务
  * @author gezz
  * @description todo
- * @date 2019/9/25.
- *
- *
- *
- * 在集群上运行MapReduce 的方法：
- * 1、在编译器打包
- * Build----Build Artifacts----
- * 2、上传到服务器
- * scp /Users/gezz/IdeaProjects/hadoop-learn/out/artifacts/wordCount/wordCount.jar root@master:/jar
- * 3、在服务器上运行
- *  hadoop jar wordCount.jar com.worthto.niuniu.WordCountSubmitter
+ * @date 2019/9/27.
  */
-public class WordCountSubmitter extends JobProviderTemplate implements JobProvider {
+public class FlowCountSubmitter extends JobProviderTemplate implements JobProvider {
 
     public static void main(String[] args) {
-        Job job = new WordCountSubmitter().getJob();
-        job.setMapperClass(WordCountMap.class);
-        job.setReducerClass(WordCountReduce.class);
+        Job job = new FlowCountSubmitter().getJob();
+
+        job.setMapperClass(FlowCountMapper.class);
+        job.setReducerClass(FlowCountReducer.class);
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(LongWritable.class);
+        job.setOutputValueClass(FlowBeanWritable.class);
         job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(LongWritable.class);
+        job.setMapOutputValueClass(FlowBeanWritable.class);
         try {
             job.submit();
         } catch (IOException e) {
@@ -70,13 +58,13 @@ public class WordCountSubmitter extends JobProviderTemplate implements JobProvid
     @Override
     public Path[] getInputPaths() {
         Path[] paths = new Path[1];
-        paths[0] = new Path("hdfs://master:9000/hdfs-file/wordcount/input");
+        paths[0] = new Path("hdfs://master:9000/hdfs-file/flow/input");
         return paths;
     }
 
     @Override
     public Path getOutputPath() {
-        return new Path("hdfs://master:9000/hdfs-file/wordcount/output/");
+        return new Path("hdfs://master:9000/hdfs-file/flow/output/");
     }
 
 }
