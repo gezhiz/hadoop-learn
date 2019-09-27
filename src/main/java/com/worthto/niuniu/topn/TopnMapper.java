@@ -1,4 +1,4 @@
-package com.worthto.niuniu.countflow;
+package com.worthto.niuniu.topn;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -12,7 +12,7 @@ import java.io.IOException;
  * @description todo
  * @date 2019/9/26.
  */
-public class FlowCountMapper extends Mapper<LongWritable,Text,Text,FlowBeanWritable> {
+public class TopnMapper extends Mapper<LongWritable,Text,Text,LongWritable> {
 
     /**
      * key 表示偏移量
@@ -24,18 +24,20 @@ public class FlowCountMapper extends Mapper<LongWritable,Text,Text,FlowBeanWrita
      */
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        if (value == null) {
-            return;
-        }
         String line = value.toString();
-        String[] items = line.split("\t");
-        if (items == null || items.length != 4) {
-            return;
-        }
-        String phone = items[0];
-//        String site = items[1];
-        Long upFlow = Long.parseLong(items[2]);
-        Long dFlow = Long.parseLong(items[3]);
-        context.write(new Text(phone), new FlowBeanWritable(upFlow, dFlow, upFlow + dFlow, phone));
+        String[] items = line.split(" ");
+        String curItem = items[1];
+        context.write(new Text(curItem),new LongWritable(1));
+    }
+
+    /**
+     * map任务执行完之前执行
+     * @param context
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @Override
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+        // NOTHING
     }
 }
