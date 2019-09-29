@@ -26,15 +26,15 @@ public class TopnReducer extends Reducer<Text,LongWritable,Text,LongWritable> {
 
     @Override
     protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
-        if (cacheMap.size() >= topn) {
-            cacheMap.remove(cacheMap.lastKey());
-        }
         String curItem = key.toString();
         Long sum = 0L;
         for (LongWritable longWritable : values) {
             sum += longWritable.get();
         }
         cacheMap.put(new PageCount(curItem,sum),curItem);
+        if (cacheMap.size() > topn) {
+            cacheMap.remove(cacheMap.lastKey());
+        }
     }
 
     @Override

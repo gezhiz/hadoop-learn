@@ -1,16 +1,21 @@
-package com.worthto.niuniu.topn;
+package com.worthto.niuniu.sort;
 
-import com.alibaba.fastjson.JSON;
+import org.apache.hadoop.io.WritableComparable;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 /**
- * 逆序排序
  * @author gezz
  * @description todo
  * @date 2019/9/27.
  */
-public class PageCount implements Comparable<PageCount> {
+public class PageCount implements WritableComparable<PageCount> {
     private String page;
     private Long count;
+
+    public PageCount() {}
 
     public PageCount(String page, Long count) {
         this.page = page;
@@ -40,6 +45,18 @@ public class PageCount implements Comparable<PageCount> {
 
     @Override
     public String toString() {
-        return JSON.toJSONString(this);
+        return page + "\t" + count;
+    }
+
+    @Override
+    public void write(DataOutput out) throws IOException {
+        out.writeUTF(page);
+        out.writeLong(count);
+    }
+
+    @Override
+    public void readFields(DataInput in) throws IOException {
+        this.page = in.readUTF();
+        this.count = in.readLong();
     }
 }

@@ -1,7 +1,9 @@
-package com.worthto.niuniu.topn;
+package com.worthto.niuniu.sort;
 
 import com.worthto.niuniu.common.JobProvider;
 import com.worthto.niuniu.common.JobProviderTemplate;
+import com.worthto.niuniu.topn.TopnMapper;
+import com.worthto.niuniu.topn.TopnReducer;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -14,7 +16,7 @@ import java.io.IOException;
  * @description todo
  * @date 2019/9/27.
  */
-public class TopnSubmitter extends JobProviderTemplate implements JobProvider {
+public class CountSubmitter extends JobProviderTemplate implements JobProvider {
     @Override
     public Path[] getInputPaths() {
         Path[] paths = new Path[1];
@@ -24,16 +26,15 @@ public class TopnSubmitter extends JobProviderTemplate implements JobProvider {
 
     @Override
     public Path getOutputPath() {
-        return new Path("hdfs://master:9000/hdfs-file/topn/output/");
+        return new Path("hdfs://master:9000/hdfs-file/sort/input/");
     }
 
 
 
     public static void main(String[] args) {
-        Job job = new TopnSubmitter().getJob();
-        job.setMapperClass(TopnMapper.class);
-        job.setReducerClass(TopnReducer.class);
-        job.setNumReduceTasks(1);
+        Job job = new CountSubmitter().getJob();
+        job.setMapperClass(CountMapper.class);
+        job.setReducerClass(CountReducer.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
