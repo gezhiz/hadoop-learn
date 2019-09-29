@@ -29,6 +29,7 @@ public class WordCount {
          * @param reporter
          * @throws IOException
          */
+        @Override
         public void map(LongWritable key, Text value, OutputCollector<Text,
                 IntWritable> output, Reporter reporter) throws IOException {
             String line = value.toString();
@@ -41,6 +42,7 @@ public class WordCount {
     }
 
     public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
+        @Override
         public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text,
                 IntWritable> output, Reporter reporter) throws IOException {
             int sum = 0;

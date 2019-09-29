@@ -51,6 +51,8 @@ public abstract class JobProviderTemplate implements JobProvider {
             e.printStackTrace();
         }
         job.setJarByClass(JobProviderTemplate.class);
+        //设置reduce的数量n，将会生成n个结果文件
+        //按照hash值去模（%）选择reduce task
         job.setNumReduceTasks(1);
         Path outputPath = getOutputPath();
         try {

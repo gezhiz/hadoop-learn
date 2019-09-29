@@ -15,6 +15,8 @@ import java.util.StringTokenizer;
  */
 public class AverageCount {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
+
+        @Override
         public void map(LongWritable key, Text value, Context context)
                 throws IOException, InterruptedException {
             String line = value.toString();//将输入的纯文本文件的数据转化成String

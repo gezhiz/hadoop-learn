@@ -12,7 +12,7 @@ import java.io.IOException;
  * @description todo
  * @date 2019/9/26.
  */
-public class CountMapper extends Mapper<LongWritable,Text,Text,LongWritable> {
+public class SortStep1Mapper extends Mapper<LongWritable,Text,Text,LongWritable> {
 
     /**
      * key 表示偏移量

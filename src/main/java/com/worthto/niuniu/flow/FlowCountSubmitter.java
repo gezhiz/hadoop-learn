@@ -1,9 +1,8 @@
-package com.worthto.niuniu.countflow;
+package com.worthto.niuniu.flow;
 
 import com.worthto.niuniu.common.JobProvider;
 import com.worthto.niuniu.common.JobProviderTemplate;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 

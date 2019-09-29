@@ -12,7 +12,7 @@ import java.io.IOException;
  * @description todo
  * @date 2019/9/27.
  */
-public class CountReducer extends Reducer<Text,LongWritable,PageCount,Void> {
+public class SortStep1Reducer extends Reducer<Text,LongWritable,PageCount,Void> {
 
     @Override
     protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {

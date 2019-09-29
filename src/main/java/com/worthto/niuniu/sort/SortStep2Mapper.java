@@ -13,7 +13,7 @@ import java.io.IOException;
  * @description todo
  * @date 2019/9/26.
  */
-public class SortMapper extends Mapper<LongWritable,Text,PageCount,IntWritable> {
+public class SortStep2Mapper extends Mapper<LongWritable,Text,PageCount,IntWritable> {
 
     private static IntWritable ONE = new IntWritable(1);
     /**

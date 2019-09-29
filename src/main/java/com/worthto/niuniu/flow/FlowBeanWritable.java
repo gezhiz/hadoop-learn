@@ -1,4 +1,4 @@
-package com.worthto.niuniu.countflow;
+package com.worthto.niuniu.flow;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.hadoop.io.Writable;

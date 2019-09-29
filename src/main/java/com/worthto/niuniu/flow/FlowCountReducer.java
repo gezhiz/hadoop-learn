@@ -1,4 +1,4 @@
-package com.worthto.niuniu.countflow;
+package com.worthto.niuniu.flow;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;

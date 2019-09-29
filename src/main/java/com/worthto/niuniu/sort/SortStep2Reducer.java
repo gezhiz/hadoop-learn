@@ -11,11 +11,11 @@ import java.io.IOException;
  * @description todo
  * @date 2019/9/27.
  */
-public class SortReducer extends Reducer<PageCount,Void,PageCount,IntWritable> {
+public class SortStep2Reducer extends Reducer<PageCount,Void,PageCount,IntWritable> {
     private static IntWritable ONE = new IntWritable(1);
 
     @Override
     protected void reduce(PageCount key, Iterable<Void> values, Context context) throws IOException, InterruptedException {
-        context.write(key, ONE);
+        context.write(key, null);
     }
 }
