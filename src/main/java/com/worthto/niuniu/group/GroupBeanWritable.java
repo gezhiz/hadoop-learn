@@ -1,6 +1,5 @@
 package com.worthto.niuniu.group;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;

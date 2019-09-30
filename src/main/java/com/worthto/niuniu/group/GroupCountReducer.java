@@ -1,6 +1,5 @@
 package com.worthto.niuniu.group;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -12,7 +11,7 @@ import java.util.Iterator;
  * @description todo
  * @date 2019/9/27.
  */
-public class GroupCountReducer extends Reducer<Text,GroupBeanWritable,Text,GroupBeanWritable> {
+public class GroupCountReducer extends Reducer<Text, GroupBeanWritable, Text, GroupBeanWritable> {
 
     @Override
     protected void reduce(Text key, Iterable<GroupBeanWritable> values, Context context) throws IOException, InterruptedException {
@@ -33,7 +32,7 @@ public class GroupCountReducer extends Reducer<Text,GroupBeanWritable,Text,Group
                 province = groupBeanWritable.getProvince();
             }
         }
-        GroupBeanWritable groupBeanWritable = new GroupBeanWritable(upCount,dCount,amount,phone, province);
+        GroupBeanWritable groupBeanWritable = new GroupBeanWritable(upCount, dCount, amount, phone, province);
         context.write(key, groupBeanWritable);
     }
 }
